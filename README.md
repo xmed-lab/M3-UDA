@@ -109,7 +109,7 @@
 
 #
 
-## :citation
+## :feet: citation
 
 ```
 @inproceedings{pu2024m3,
@@ -122,10 +122,9 @@
 ```
 
 
-<!-- ###### :rocket: Code Reference 
-  - https://github.com/huawei-noah/Efficient-AI-Backbones/tree/master/vig_pytorch
-  - https://github.com/chengchunhsu/EveryPixelMatters 
+###### :rocket: Code Reference 
+  - https://github.com/CityU-AIM-Group/SIGMA
 
-###### :rocket: Updates Ver 1.0（PyTorch）
-###### :rocket: Project Created by Jiewen Yang : jyangcu@connect.ust.hk
-======= -->
+<!-- ###### :rocket: Updates Ver 1.0（PyTorch）
+###### :rocket: Project Created by Jiewen Yang : jyangcu@connect.ust.hk -->
+=======
