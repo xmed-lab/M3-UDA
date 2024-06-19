@@ -19,7 +19,7 @@
 
 
 ## :hammer: PostScript
-&ensp; :smile: This project is the pytorch implemention of $M^3$-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection;
+&ensp; :smile: This project is the pytorch implemention of $M^3$-UDA;
 
 &ensp; :laughing: Our experimental platform is configured with <u>One *RTX3090 (cuda>=11.0)*</u>; 
 
