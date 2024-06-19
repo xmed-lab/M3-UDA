@@ -109,6 +109,18 @@
 
 #
 
+## :citation
+
+```
+@inproceedings{pu2024m3,
+  title={M3-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection},
+  author={Pu, Bin and Wang, Liwen and Yang, Jiewen and He, Guannan and Dong, Xingbo and Li, Shengli and Tan, Ying and Chen, Ming and Jin, Zhe and Li, Kenli and others},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={11621--11630},
+  year={2024}
+}
+```
+
 
 <!-- ###### :rocket: Code Reference 
   - https://github.com/huawei-noah/Efficient-AI-Backbones/tree/master/vig_pytorch
