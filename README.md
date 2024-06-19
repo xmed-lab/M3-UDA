@@ -111,7 +111,7 @@
 
 #
 
-## :test: Test
+## :feet: Testing
 1. Download the checkpoint in table below.
 | Experiment      | Checkpoint |
 | ----------- | ----------- |
