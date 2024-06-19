@@ -65,7 +65,7 @@
 
    1. Download & Unzip the dataset.
 
-      The ***CAMUS dataset*** is composed as: /Hospital1 & /Hospital2 & Hospital3.
+      The ***FCS dataset*** is composed as: /Hospital1 & /Hospital2 & Hospital3.
 
    2. The source code of loading the FCS dataset exist in path :
 
@@ -75,6 +75,7 @@
       ..\utils/config.py
       ```
 
+   3. Set the parameters about source domain,target domain and slice etc in **utils/config.py** 
    <!-- #### *1.2. Download The **CardiacUDA**.*
 
    :speech_balloon: The detail of CardiacUDA, please refer to: https://echonet.github.io/dynamic/.
@@ -93,7 +94,7 @@
 
 ## :feet: Training
 
-1. In this framework, after the parameters are configured in the file **train_graph_his_debug.py** , you only need to use the command:
+1. In this framework, after the parameters are configured in the file **utils/config.py** and **train_graph_his_debug.py** , you only need to use the command:
 
     ```shell
     python train_graph_his_debug.py
