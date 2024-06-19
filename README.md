@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 <div align=center>
-<h1>  $M^3$-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection.
-
-
-The dataset is coming soon.</h1>
+<h1>  $M^3$-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection.</h1>
 </div>
 <div align=center>
 
@@ -23,22 +19,22 @@ The dataset is coming soon.</h1>
 
 
 ## :hammer: PostScript
-&ensp; :smile: This project is the pytorch implemention of **[[paper](https://arxiv.org/abs/2309.11145)]**;
+&ensp; :smile: This project is the pytorch implemention of $M^3$-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection;
 
 &ensp; :laughing: Our experimental platform is configured with <u>One *RTX3090 (cuda>=11.0)*</u>; 
 
-&ensp; :blush: Currently, this code is avaliable for public dataset <u>CAMUS and EchoNet</u>;
+&ensp; :blush: Currently, this code is avaliable for proposed dataset FCS and public dataset <u>CardiacUDA</u>;
 
-&ensp; :smiley: For codes and accessment that related to dataset ***CardiacUDA***;
+<!-- &ensp; :smiley: For codes and accessment that related to dataset ***CardiacUDA***; -->
 
 &ensp; &ensp; &ensp;    **:eyes:** The code is now available at:
 &ensp; &ensp; &ensp;       ```
-                            ..\datasets\cardiac_uda.py
+                            ..\data\detus_dataset.py
                            ```
 
-&ensp; :heart_eyes: For codes and accessment that related to dataset ***CardiacUDA***
+<!-- &ensp; :heart_eyes: For codes and accessment that related to dataset ***CardiacUDA*** -->
 
-&ensp; &ensp; &ensp;    **:eyes:** Please follw the link to access our dataset：
+&ensp; &ensp; &ensp;    **:eyes:** The dataset is coming soon.：
 
 
 ## :computer: Installation
