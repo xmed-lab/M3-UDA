@@ -52,36 +52,36 @@
 
 ## :blue_book: Data Preparation
 
-### *1. EchoNet & CAMUS*
- * This project provides the use case of echocardiogram video segmentation task;
+### *1. FCS dataset*
+ * This project provides the use case of Unsupervised Domain Adaptive Fetal Cardiac Structure Detection task;
 
- * The hyper parameters setting of the dataset can be found in the **train.py**, where you could do the parameters modification;
+ * The hyper parameters setting of the dataset can be found in the **utils/config.py**, where you could do the parameters modification;
 
  * For different tasks, the composition of data sets have significant different, so there is no repetition in this file;
 
 
-   #### *1.1. Download The **CAMUS**.*
-   :speech_balloon: The detail of CAMUS, please refer to: https://www.creatis.insa-lyon.fr/Challenge/camus/index.html/.
+   <!-- #### *1.1. Download The **FCS**.* -->
+   <!-- :speech_balloon: The detail of CAMUS, please refer to: https://www.creatis.insa-lyon.fr/Challenge/camus/index.html/. -->
 
    1. Download & Unzip the dataset.
 
-      The ***CAMUS dataset*** is composed as: /testing & /training.
+      The ***CAMUS dataset*** is composed as: /Hospital1 & /Hospital2 & Hospital3.
 
-   2. The source code of loading the CAMUS dataset exist in path :
+   2. The source code of loading the FCS dataset exist in path :
 
       ```python
-      ..\datasets\camus.py
+      ..\data\fetus_dataset.py
       and modify the dataset path in
-      ..\train_camus_echo.py
+      ..\utils/config.py
       ```
 
-   #### *1.2. Download The **EchoNet**.*
+   <!-- #### *1.2. Download The **CardiacUDA**.*
 
-   :speech_balloon: The detail of EchoNet, please refer to: https://echonet.github.io/dynamic/.
+   :speech_balloon: The detail of CardiacUDA, please refer to: https://echonet.github.io/dynamic/.
 
    1. Download & Unzip the dataset.
 
-      - The ***EchoNet*** dataset is consist of: /Video, FileList.csv & VolumeTracings.csv.
+      - The ***CardiacUDA*** dataset is consist of: /Video, FileList.csv & VolumeTracings.csv.
 
    2. The source code of loading the Echonet dataset exist in path :
 
@@ -89,24 +89,7 @@
       ..\datasets\echo.py
       and modify the dataset path in
       ..\train_camus_echo.py
-      ```
-
-## *2. CardiacUDA*
- 1.  Please access the dataset through : [XiaoweiXu's Github](https://github.com/XiaoweiXu/CardiacUDA-dataset)
- 2.  Follw the instruction and download.
- 3.  Finish dataset download and unzip the datasets.
- 4.  Modify your code in both:
-        ```python
-        ..\datasets\cardiac_uda.py
-        and modify the infos and dataset path in
-        ..\train_cardiac_uda.py
-        # The layer of the infos dict should be :
-        # dict{
-        #     center_name: {
-        #                  file: {
-        #                        views_images: {image_path},
-        #                        views_labels: {label_path},}}}
-        ```
+      ``` -->
 
 ## :feet: Training
 
@@ -123,11 +106,10 @@
 #
 
 
-###### :rocket: Code Reference 
+<!-- ###### :rocket: Code Reference 
   - https://github.com/huawei-noah/Efficient-AI-Backbones/tree/master/vig_pytorch
   - https://github.com/chengchunhsu/EveryPixelMatters 
 
 ###### :rocket: Updates Ver 1.0（PyTorch）
 ###### :rocket: Project Created by Jiewen Yang : jyangcu@connect.ust.hk
-=======
->>>>>>> bb77f9a8727e80952da9ffb932f6048d4e95c2b4
+======= -->
