@@ -116,10 +116,10 @@
 ---
 | Experiment      | Checkpoint |
 | ----------- | ----------- |
-| 4CC 1->3      | [4CC1-3](https://drive.google.com/file/d/1SXKbSGN0sGyShdu4QnphYsdNout4lNnU/view?usp=drive_link) |
-| 4CC 3->1      | [4CC3-1](https://drive.google.com/file/d/1O2Py77c3DNXw5-3jm2rrOunZxPzl2X0Y/view?usp=drive_link) |
-| 3VT 1->3      | [3VT1-3](https://drive.google.com/file/d/1sFtJAsCb0NZ_uUE3Xzi4grIZfsgsEbVB/view?usp=drive_link) |
-| 3VT 3->1      | [3VT3-1](https://drive.google.com/file/d/1OnoCU5TrqF65fCfVGNRfli9XO294BrR5/view?usp=drive_link) |
+| 4CC 1->2      | [4CC1-2](https://drive.google.com/file/d/1SXKbSGN0sGyShdu4QnphYsdNout4lNnU/view?usp=drive_link) |
+| 4CC 2->1      | [4CC2-1](https://drive.google.com/file/d/1O2Py77c3DNXw5-3jm2rrOunZxPzl2X0Y/view?usp=drive_link) |
+| 3VT 1->2      | [3VT1-2](https://drive.google.com/file/d/1sFtJAsCb0NZ_uUE3Xzi4grIZfsgsEbVB/view?usp=drive_link) |
+| 3VT 2->1      | [3VT2-1](https://drive.google.com/file/d/1OnoCU5TrqF65fCfVGNRfli9XO294BrR5/view?usp=drive_link) |
 ---
 2. Update the test weight path in **config.py**.
 
