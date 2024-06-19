@@ -75,7 +75,7 @@
       ..\utils/config.py
       ```
 
-   3. Set the parameters about source domain,target domain and slice etc in **utils/config.py** 
+   3. Set the parameters about GPU_id, source domain,target domain and slice etc in **utils/config.py** 
    <!-- #### *1.2. Download The **CardiacUDA**.*
 
    :speech_balloon: The detail of CardiacUDA, please refer to: https://echonet.github.io/dynamic/.
@@ -103,6 +103,9 @@
 2. You are also able to start distributed training. 
 
    - **Note:** Please set the number of graphics cards you need and their id in parameter **"enable_GPUs_id"**.
+   ```shell
+   python -m torch.distributed.launch --nproc_per_node=4 train_graph_his_debug.py
+   ```
 
 #
 
