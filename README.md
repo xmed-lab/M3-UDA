@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div align=center>
 <h1>  $M^3$-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection.
 
@@ -136,3 +137,9 @@ The dataset is coming soon.</h1>
 
 ###### :rocket: Updates Ver 1.0（PyTorch）
 ###### :rocket: Project Created by Jiewen Yang : jyangcu@connect.ust.hk
+=======
+Code for CVPR 2024 Paper: "M3-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection" by Bin Pu, Liwen Wang, Jiewen Yang, Guannan He, Xingbo Dong, Shengli Li, Tan Ying, Ming Chen, Zhe Jin, Kenli Li and Xiaomeng Li.
+
+
+The dataset is coming soon.
+>>>>>>> bb77f9a8727e80952da9ffb932f6048d4e95c2b4
