@@ -94,17 +94,17 @@
 
 ## :feet: Training
 
-1. In this framework, after the parameters are configured in the file **utils/config.py** and **train_graph_his_debug.py** , you only need to use the command:
+1. In this framework, after the parameters are configured in the file **utils/config.py** and **train.py** , you only need to use the command:
 
     ```shell
-    python train_graph_his_debug.py
+    python train.py
     ```
 
 2. You are also able to start distributed training. 
 
    - **Note:** Please set the number of graphics cards you need and their id in parameter **"enable_GPUs_id"**.
    ```shell
-   python -m torch.distributed.launch --nproc_per_node=4 train_graph_his_debug.py
+   python -m torch.distributed.launch --nproc_per_node=4 train.py
    ```
 
 #
