@@ -91,7 +91,9 @@
       and modify the dataset path in
       ..\train_camus_echo.py
       ``` -->
-
+### *2. FCS dataset access*
+  * Dataset access can be obtained by contacting hospital staff (doc.liangbc@gmail.com) and asking for a license.
+    
 ## :feet: Training
 
 1. In this framework, after the parameters are configured in the file **utils/config.py** and **train.py** , you only need to use the command:
