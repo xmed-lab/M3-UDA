@@ -110,14 +110,10 @@
 
 ## :feet: Training
 
-1. In this framework, after the parameters are configured in the file **train_cardiac_uda.py** and **train_camus_echo.py**, you only need to use the command:
+1. In this framework, after the parameters are configured in the file **train_graph_his_debug.py** , you only need to use the command:
 
     ```shell
-    python train_cardiac_uda.py
-    ```
-    And
-    ```shell
-    python train_camus_echo.py
+    python train_graph_his_debug.py
     ```
 
 2. You are also able to start distributed training. 
@@ -134,8 +130,4 @@
 ###### :rocket: Updates Ver 1.0（PyTorch）
 ###### :rocket: Project Created by Jiewen Yang : jyangcu@connect.ust.hk
 =======
-Code for CVPR 2024 Paper: "M3-UDA: A New Benchmark for Unsupervised Domain Adaptive Fetal Cardiac Structure Detection" by Bin Pu, Liwen Wang, Jiewen Yang, Guannan He, Xingbo Dong, Shengli Li, Tan Ying, Ming Chen, Zhe Jin, Kenli Li and Xiaomeng Li.
-
-
-The dataset is coming soon.
 >>>>>>> bb77f9a8727e80952da9ffb932f6048d4e95c2b4
