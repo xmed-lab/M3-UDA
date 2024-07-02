@@ -32,9 +32,6 @@
                             ..\data\detus_dataset.py
                            ```
 
-<!-- &ensp; :heart_eyes: For codes and accessment that related to dataset ***CardiacUDA*** -->
-
-&ensp; &ensp; &ensp;    **:eyes:** The dataset is coming soon.：
 
 
 ## :computer: Installation
