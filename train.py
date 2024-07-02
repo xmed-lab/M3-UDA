@@ -10,7 +10,6 @@ import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
-from cardiac_uda import Seg_Cardiac_UDA_Dataset
 
 from data.dataset import inverse_normalize
 from data.fetus_dataset import fetus_Dataset, collate_fn
