@@ -70,6 +70,13 @@ class Trainer():
         vaildset = fetus_Dataset(self.opt, operation='valid', domain='Target')
         testset  = fetus_Dataset(self.opt, operation='test', domain='Target')  
 
+        self.train_source_dataloader = DataLoader(train_source_set,
+                                        collate_fn = collate_fn(opt),
+                                        batch_size=2,
+                                        shuffle=True,
+                                        num_workers=self.opt.num_workers,
+                                        drop_last=True)
+
         self.train_target_dataloader = DataLoader(train_target_set,
                                         collate_fn = collate_fn(opt),
                                         batch_size=2,
