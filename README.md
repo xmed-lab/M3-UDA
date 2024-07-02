@@ -122,6 +122,9 @@
 | 3VT 2->1      | [3VT2-1](https://drive.google.com/file/d/1OnoCU5TrqF65fCfVGNRfli9XO294BrR5/view?usp=drive_link) |
 ---
 2. Update the test weight path in **config.py**.
+3. ```shell
+    python test.py
+    ```
 
 
 ## :feet: citation
