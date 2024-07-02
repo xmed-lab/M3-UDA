@@ -34,7 +34,7 @@ class Config:
     size_divisible = 32
 
     # Data
-    dataset_path = '/media/Storage1/wlw/restore/One_Stage_Fetus_Object_Detection_Code_v2/Dataset_Fetus_Object_Detection/'
+    dataset_path = '/media/Storage1/restore/One_Stage_Fetus_Object_Detection_Code_v2/Dataset_Fetus_Object_Detection/'
     slices = ['four_chamber_heart']
     selected_source_hospital = ['Hospital_1']
     selected_target_hospital = ['Hospital_3']
