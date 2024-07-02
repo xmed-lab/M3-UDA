@@ -123,9 +123,10 @@
 ---
 2. Update the test weight path in **config.py**.
 3. you only need to use the command:
-```shell
+
+   ```shell
     python test.py
-    ```.
+    ```
 
 
 ## :feet: citation
