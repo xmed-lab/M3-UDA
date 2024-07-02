@@ -6,8 +6,6 @@ import torch.nn.functional as F
 from model.fpnseg import VGG16, ResNet, Bottleneck
 from utils.boxlist import BoxList, boxlist_nms, remove_small_box, cat_boxlist
 from model.utils.losses import FCOSLoss
-from model.From_classifier import From_classifier
-from model.Standard_classifier import Standard_classifier
 from model.discriminator import Discriminator
 from utils.config import opt
 from model.faster_rcnn_vgg16 import decom_vgg16
@@ -327,9 +325,6 @@ class Topograph(nn.Module):
         if Topograph_m:
             self.with_ctr = True
         self.loss = FCOSLoss(opt)
-
-        # self.from_classifier = From_classifier(2)
-        # self.standard_classifier = Standard_classifier(2)
 
         self.head = FCOSHead(opt.out_channel, opt.n_class, opt.n_conv, opt.prior)
         self.fpn_strides = opt.fpn_strides

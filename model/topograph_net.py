@@ -6,8 +6,6 @@ import torch.nn.functional as F
 from model.fpnseg import VGG16, ResNet, Bottleneck, ResNet152, ResNet50
 from utils.boxlist import BoxList, boxlist_nms, remove_small_box, cat_boxlist
 from model.utils.losses import FCOSLoss
-from model.From_classifier import From_classifier
-from model.Standard_classifier import Standard_classifier
 from model.discriminator import Discriminator
 from utils.config import opt
 
@@ -325,9 +323,6 @@ class Topograph(nn.Module):
             self.with_ctr = True
         self.loss = FCOSLoss(opt)
 
-        # self.from_classifier = From_classifier(2)
-        # self.standard_classifier = Standard_classifier(2)
-
         self.head = FCOSHead(opt.out_channel, opt.n_class, opt.n_conv, opt.prior)
         self.fpn_strides = opt.fpn_strides
 
@@ -335,33 +330,6 @@ class Topograph(nn.Module):
         # b, c, h, w = imgs.shape
         features = self.extractor(imgs)
         features = self.fpn(features)
-
-
-        # from_domain = torch.empty((imgs.shape[0],2),dtype=float).to(device=opt.device)
-        # if domain=='Source':
-        #     data = [0,0]
-        #     data = torch.tensor(data)
-        #     for i in range(imgs.shape[0]):
-        #         from_domain[i] = data
-        # elif domain=='Target':
-        #     data = [1,1]
-        #     data = torch.tensor(data)
-        #     for i in range(imgs.shape[0]):
-        #         from_domain[i] = data
-        # features_resized = F.interpolate(features[3], size=(6,8), mode='bilinear', align_corners=False)
-        # res_from = self.from_classifier(features_resized) 
-        # from_classifier_loss = self.from_classifier_loss(res_from,from_domain)
-        # classifier_loss = from_classifier_loss
-        # if domain == 'Source':
-        #     standard_num = standard[0]
-        #     standard_use = torch.empty((imgs.shape[0],2),dtype=float).to(device=opt.device)
-        #     data = [standard_num,standard_num]
-        #     data = torch.tensor(data)
-        #     for i in range(imgs.shape[0]):
-        #         standard_use[i] = data
-        #     res_standard = self.standard_classifier(features_resized)
-        #     standard_classifier_loss = self.standard_loss(res_standard,standard_use)
-        #     classifier_loss = standard_classifier_loss + from_classifier_loss
         
         cls_pred, box_pred, center_pred = self.head(features)
         location = self.compute_location(features)

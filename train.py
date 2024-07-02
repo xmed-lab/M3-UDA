@@ -54,13 +54,11 @@ matplotlib.use('agg')
 
 starttime = time.strftime("%Y-%m-%d_%H:%M:%S")
 print(starttime[:19])
-writer = SummaryWriter(log_dir="log_m_h/"+starttime[:19]+opt.description,comment=starttime[:19],flush_secs=30)
+writer = SummaryWriter(log_dir="log/"+starttime[:19]+opt.description,comment=starttime[:19],flush_secs=30)
 
 class Trainer():
     def __init__(self, opt):
         self.opt = opt
-        root = 'Cardiac_UDA_' 
-        infos = np.load(f'{root}/info.npy', allow_pickle=True).item()
         self.label_num = len(annnotations_convert[opt.slices[0]])
         self.opt.n_class = self.label_num + 1
         opt.n_class = self.label_num + 1
@@ -68,31 +66,11 @@ class Trainer():
         opt.n_class = self.label_num + 1
 
         print('Load Fetus Dataset')
-        if self.opt.selected_source_hospital[0] in ['Hospital_1','Hospital_2','Hospital_3']:
-            train_source_set = fetus_Dataset(self.opt, operation='train')
-        else:
-            self.opt.n_class = 5
-            opt.n_class = 5
-            self.label_num = 4
-            graph_opt.MODEL.FCOS.NUM_CLASSES = self.label_num + 1
-            opt.n_class = self.label_num + 1
-            train_source_set = Seg_Cardiac_UDA_Dataset(infos, root, is_train=True, set_select=self.opt.selected_source_hospital, view_num=['4'], seg_parts=True)
-        self.train_source_dataloader = DataLoader(train_source_set,
-                                        collate_fn = collate_fn(opt),
-                                        batch_size=2,
-                                        shuffle=True,
-                                        num_workers=self.opt.num_workers,
-                                        drop_last=True)
+        train_source_set = fetus_Dataset(self.opt, operation='train')
+        train_target_set = fetus_Dataset(self.opt, operation='train', domain='Target')
+        vaildset = fetus_Dataset(self.opt, operation='valid', domain='Target')
+        testset  = fetus_Dataset(self.opt, operation='test', domain='Target')  
 
-        if self.opt.selected_target_hospital[0] in ['Hospital_1','Hospital_2','Hospital_3']:
-            train_target_set = fetus_Dataset(self.opt, operation='train', domain='Target')
-            vaildset = fetus_Dataset(self.opt, operation='valid', domain='Target')
-            testset  = fetus_Dataset(self.opt, operation='test', domain='Target')
-        else:
-            train_target_set = Seg_Cardiac_UDA_Dataset(infos, root, is_train=True, set_select=self.opt.selected_target_hospital, view_num=['4'], seg_parts=True)
-            vaildset = Seg_Cardiac_UDA_Dataset(infos, root, is_train=False, set_select=self.opt.selected_target_hospital, view_num=['4'], seg_parts=True)
-            testset  = Seg_Cardiac_UDA_Dataset(infos, root, is_train=False, set_select=self.opt.selected_target_hospital, view_num=['4'], seg_parts=True)
-        
         self.train_target_dataloader = DataLoader(train_target_set,
                                         collate_fn = collate_fn(opt),
                                         batch_size=2,
@@ -166,8 +144,6 @@ class Trainer():
             target_iter = iter(self.train_target_dataloader)
 
             for _ in tqdm(range(max_len)):
-                # if step == max_step:
-                #     train_target_dataloader_use = train_target_dataloader_second
 
                 try:
                     imgs_src, targets_src, _ = next(source_iter)
@@ -229,8 +205,6 @@ class Trainer():
                 backbone_loss = loss_cls + loss_box + loss_center
 
                 loss_matching = sum(loss for loss in middle_head_loss.values())
-                ## loss_matching including loss_classification and loss_matching
-                # loss_matching = torch.tensor(0,device=opt.device,dtype=float)
                 overall_loss = backbone_loss + loss_matching * 0.5 + loss_sub_m * 0.5
                  
                 for opt_k in self.optimizer:
