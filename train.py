@@ -13,6 +13,7 @@ import torchvision.transforms as T
 
 from data.dataset import inverse_normalize
 from data.fetus_dataset import fetus_Dataset, collate_fn
+import torch.nn.functional as F
 
 from utils.config import opt
 from utils import array_tool as at
@@ -25,25 +26,20 @@ from utils.distributed import get_rank, synchronize, reduce_loss_dict, Distribut
 from utils.graph_config import _C as graph_opt
 from utils.build_opt import make_optimizer, make_lr_scheduler
 
-import torch.nn.functional as F
-
 from model.topograph_net import FCOSPostprocessor, Topograph
-# from model.topograph_net_vgg16 import Topograph, FCOSPostprocessor
 from model.graph_matching import build_graph_matching_head
-from model.substructure_matching import substructure_matching_sinkhorn, substructure_matching_L2
+from model.substructure_matching import substructure_matching_L2, substructure_matching_distance, substructure_matching_sinkhorn
 from utils.slice import slice_tensor
 from torch.utils.tensorboard import SummaryWriter 
 from skimage import exposure
 import time
-from torchvision.transforms import ToPILImage
 from data.fetus_dataset import annnotations_convert
+
 
 import resource
 import wandb
 
 import warnings
-
-from utils.histogram_util import match_histograms
 warnings.filterwarnings("ignore")
 
 rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
@@ -53,7 +49,7 @@ matplotlib.use('agg')
 
 starttime = time.strftime("%Y-%m-%d_%H:%M:%S")
 print(starttime[:19])
-writer = SummaryWriter(log_dir="log/"+starttime[:19]+opt.description,comment=starttime[:19],flush_secs=30)
+writer = SummaryWriter(log_dir="log_m_h/"+starttime[:19]+opt.description,comment=starttime[:19],flush_secs=30)
 
 class Trainer():
     def __init__(self, opt):
@@ -63,33 +59,31 @@ class Trainer():
         opt.n_class = self.label_num + 1
         graph_opt.MODEL.FCOS.NUM_CLASSES = self.label_num + 1
         opt.n_class = self.label_num + 1
-
         print('Load Fetus Dataset')
         train_source_set = fetus_Dataset(self.opt, operation='train')
-        train_target_set = fetus_Dataset(self.opt, operation='train', domain='Target')
-        vaildset = fetus_Dataset(self.opt, operation='valid', domain='Target')
-        testset  = fetus_Dataset(self.opt, operation='test', domain='Target')  
-
         self.train_source_dataloader = DataLoader(train_source_set,
                                         collate_fn = collate_fn(opt),
-                                        batch_size=2,
+                                        batch_size=4,
                                         shuffle=True,
                                         num_workers=self.opt.num_workers,
                                         drop_last=True)
 
+        train_target_set = fetus_Dataset(self.opt, operation='train', domain='Target')
         self.train_target_dataloader = DataLoader(train_target_set,
                                         collate_fn = collate_fn(opt),
-                                        batch_size=2,
+                                        batch_size=4,
                                         shuffle=True,
                                         num_workers=self.opt.num_workers,
                                         drop_last=True)
-        
+
+        vaildset = fetus_Dataset(self.opt, operation='valid', domain='Target')
         self.vaild_dataloader = DataLoader(vaildset,
                                         collate_fn = collate_fn(opt),
                                         batch_size=1,
                                         num_workers=opt.test_num_workers,
                                         shuffle=False,)
-        
+
+        testset  = fetus_Dataset(self.opt, operation='test', domain='Target')
         self.test_dataloader = DataLoader(testset,
                                         collate_fn = collate_fn(opt),
                                         batch_size=1,
@@ -112,8 +106,6 @@ class Trainer():
         self.optimizer["middle_head"] = make_optimizer(graph_opt, self.graph_matching, name='backbone')
         self.scheduler["backbone"] = make_lr_scheduler(graph_opt, self.optimizer["backbone"], name='middle_head')
         self.scheduler["middle_head"] = make_lr_scheduler(graph_opt, self.optimizer["middle_head"], name='middle_head')
-
-        self.toPIL = ToPILImage()
 
         if self.opt.distributed:
             self.model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(self.model)
@@ -141,7 +133,7 @@ class Trainer():
         lr_ = self.opt.lr
         for epoch in range(self.opt.epoch):
             self.model.train()
-
+            
             len_source = len(self.train_source_dataloader)
             len_target = len(self.train_target_dataloader)
             max_len = max(len_source, len_target)
@@ -165,16 +157,13 @@ class Trainer():
                 
                 targets_src = [target.to(device=opt.device) for target in targets_src]
 
-                # sp Tranfer (histogram match)
-                # two ways, first implement with exposure and second one implement with match_histograms in /v3/utils/histogram_util.py
-                # imgs_src = torch.stack([
-                #     torch.from_numpy(match_histograms(img.permute(1, 2, 0).numpy(), img_target.permute(1, 2, 0).numpy())).permute(2, 0, 1)
-                #     for img, img_target in zip(imgs_src.tensors, imgs_tgt.tensors)
-                # ], dim=0).float()
-                imgs_tgt.tensors = torch.stack([
+                imgs_src.tensors = torch.stack([
                     torch.from_numpy(exposure.match_histograms(img.permute(1, 2, 0).numpy(), img_target.permute(1, 2, 0).numpy())).permute(2, 0, 1)
-                    for img, img_target in zip(imgs_tgt.tensors, imgs_src.tensors)
+                    for img, img_target in zip(imgs_src.tensors, imgs_tgt.tensors)
                 ], dim=0).float()
+
+                # imgs_src.tensors = F.interpolate(imgs_src.tensors, size=(896, 896), mode='bilinear', align_corners=False)
+                # imgs_tgt.tensors = F.interpolate(imgs_tgt.tensors, size=(896, 896), mode='bilinear', align_corners=False)
                 
                 (features_src, _, _, _), _, losses = \
                     self.model(imgs_src.tensors.to(device=opt.device), image_sizes=None, targets=targets_src, train=True, domain='Source')
@@ -186,7 +175,8 @@ class Trainer():
                 (_, _), middle_head_loss = self.graph_matching(None, (features_src, features_tgt), targets=targets_src, score_maps=score_maps_tgt)
                 
                 loss_sub_m = torch.tensor(0,device=opt.device,dtype=float)
-                if epoch >= opt.match_start_epoch:
+                loss_fre_distribution = torch.tensor(0,device=opt.device,dtype=float)
+                if epoch > opt.match_start_epoch:
                     features_t_slice = slice_tensor(features_tgt)
                     cls_pred_t_slice = slice_tensor(cls_pred_tgt)
                     box_pred_t_slice = slice_tensor(box_pred_tgt)
@@ -198,10 +188,10 @@ class Trainer():
                             location, cls_pred_t_slice[i], box_pred_t_slice[i], center_pred_t_slice[i], imgs_tgt.sizes[i]
                         )
                         label = boxes[0].fields['labels']
-                        # Specifies whether all class nodes are owned
+                        # 规范是否拥有所有类别节点
                         unique_v = set(label.tolist())
-                        if len(unique_v) == self.label_num and set(range(1, self.label_num + 1)).issubset(unique_v):
-                            loss_sub_m += substructure_matching_L2(targets_src[i], boxes[0],self.label_num)
+                        if len(unique_v) == 9 and set(range(1, 10)).issubset(unique_v):
+                            loss_sub_m += substructure_matching_L2(targets_src[i], boxes[0], self.label_num)
                         else:
                             continue
                 
@@ -211,7 +201,10 @@ class Trainer():
                 backbone_loss = loss_cls + loss_box + loss_center
 
                 loss_matching = sum(loss for loss in middle_head_loss.values())
-                overall_loss = backbone_loss + loss_matching * 0.5 + loss_sub_m * 0.5
+
+                loss_fre_distribution = loss_fre_distribution * 1e-3
+                loss_sub_m = loss_sub_m * 1e-2
+                overall_loss = backbone_loss + loss_matching + loss_sub_m + loss_fre_distribution
                  
                 for opt_k in self.optimizer:
                     self.optimizer[opt_k].zero_grad()
@@ -221,17 +214,17 @@ class Trainer():
                 for opt_k in self.optimizer:
                     self.optimizer[opt_k].step()
 
-            if not isinstance(loss_sub_m, torch.Tensor):
-                loss_sub_m = torch.tensor(loss_sub_m,device=opt.device,dtype=float)
+            # if not isinstance(loss_sub_m, torch.Tensor):
+            #     loss_sub_m = torch.tensor(loss_sub_m,device=opt.device,dtype=float)
                 
             eval_result = self.eval(self.vaild_dataloader, test_num=self.opt.test_num)
-            log_info = 'epoch:{}, map:{},loss:{},backbone_loss:{},loss_matching:{},loss_sub_m:{},ap:{}'.format(str(epoch),
+            log_info = 'epoch:{}, map:{},loss:{},backbone_loss:{},loss_matching:{},loss_sub_m:{},loss_fre_distribution:{}'.format(str(epoch),
                                                          str(eval_result['map']),
                                                          str(round(overall_loss.item(),4)),
                                                          str(round(backbone_loss.item(),4)),
                                                          str(round(loss_matching.item(),4)),
                                                          str(round(loss_sub_m.item(),4)),
-                                                         str(eval_result['ap']),
+                                                         str(round(loss_fre_distribution.item(),4)),
                                                         )
             
             writer.add_scalar('mAP', eval_result['map'], global_step=epoch, walltime=None)
@@ -287,7 +280,6 @@ class Trainer():
 
             preds = {}
             imgs = imgs.tensors.to(device=opt.device)
-            imgs = F.interpolate(imgs, size=(896, 896), mode='bilinear', align_corners=False)
 
             gt_targets = [target.to('cpu') for target in gt_targets]
 
@@ -393,7 +385,6 @@ class Trainer():
         location = torch.stack((shift_x, shift_y), 1) + stride // 2
 
         return location
-
 
 def main(rank, opt):
 
