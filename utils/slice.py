@@ -1,18 +1,16 @@
-
-
 import torch
 
-
-def slice_tensor(my_list):
-    list1, list2, list3, list4 = [], [], [], []
-    num_parts = 4 
+def slice_tensor(my_list, num):
+    # Create a list of empty lists to hold the sub-tensors
+    lists = [[] for _ in range(num)]
+    
+    # Loop through each tensor in the input list
     for tensor in my_list:
-        
+        # Split the tensor into sub-tensors
         sub_tensors = torch.split(tensor, 1, dim=0)
-
-        for i in range(num_parts):
-            if i == 0:
-                list1.append(sub_tensors[i])
-            elif i == 1:
-                list2.append(sub_tensors[i])
-    return [list1, list2]
+        
+        # Append each sub-tensor to the corresponding list
+        for i in range(num):
+            lists[i].append(sub_tensors[i])
+            
+    return lists

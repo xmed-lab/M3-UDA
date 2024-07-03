@@ -176,11 +176,11 @@ class Trainer():
                 
                 loss_sub_m = torch.tensor(0,device=opt.device,dtype=float)
                 loss_fre_distribution = torch.tensor(0,device=opt.device,dtype=float)
-                if epoch > opt.match_start_epoch:
-                    features_t_slice = slice_tensor(features_tgt)
-                    cls_pred_t_slice = slice_tensor(cls_pred_tgt)
-                    box_pred_t_slice = slice_tensor(box_pred_tgt)
-                    center_pred_t_slice = slice_tensor(center_pred_tgt)
+                if epoch >= opt.match_start_epoch:
+                    features_t_slice = slice_tensor(features_tgt, self.train_source_dataloader.batch_size)
+                    cls_pred_t_slice = slice_tensor(cls_pred_tgt, self.train_source_dataloader.batch_size)
+                    box_pred_t_slice = slice_tensor(box_pred_tgt, self.train_source_dataloader.batch_size)
+                    center_pred_t_slice = slice_tensor(center_pred_tgt, self.train_source_dataloader.batch_size)
                     
                     for i in range(len(targets_src)):
                         location = self.compute_location(features_t_slice[i])
@@ -190,7 +190,7 @@ class Trainer():
                         label = boxes[0].fields['labels']
                         # 规范是否拥有所有类别节点
                         unique_v = set(label.tolist())
-                        if len(unique_v) == 9 and set(range(1, 10)).issubset(unique_v):
+                        if len(unique_v) == self.label_num and set(range(1, self.label_num + 1)).issubset(unique_v):
                             loss_sub_m += substructure_matching_L2(targets_src[i], boxes[0], self.label_num)
                         else:
                             continue
