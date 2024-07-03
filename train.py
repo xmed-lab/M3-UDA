@@ -63,7 +63,7 @@ class Trainer():
         train_source_set = fetus_Dataset(self.opt, operation='train')
         self.train_source_dataloader = DataLoader(train_source_set,
                                         collate_fn = collate_fn(opt),
-                                        batch_size=4,
+                                        batch_size=2,
                                         shuffle=True,
                                         num_workers=self.opt.num_workers,
                                         drop_last=True)
@@ -71,7 +71,7 @@ class Trainer():
         train_target_set = fetus_Dataset(self.opt, operation='train', domain='Target')
         self.train_target_dataloader = DataLoader(train_target_set,
                                         collate_fn = collate_fn(opt),
-                                        batch_size=4,
+                                        batch_size=2,
                                         shuffle=True,
                                         num_workers=self.opt.num_workers,
                                         drop_last=True)
