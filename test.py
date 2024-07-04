@@ -144,50 +144,16 @@ class Trainer():
                 img = imgs.squeeze(0)
                 image_p = T.ToPILImage()(img)
                 bbox = bbox.astype(int)
-                font = ImageFont.truetype(font='Gemelli.ttf', size=np.floor(1.5e-2 * np.shape(image_p)[1] + 15).astype('int32'))
-                arr = []
-                for i in range(_pred_labels.min(),_pred_labels.max()+1):
-                    l = np.where(_pred_labels == i)
-                    if l is not None and l[0].size != 0:
-                        arr.append(l[0][0])
-                        if i == 9 and l[0].shape[0] > 1:
-                            arr.append(l[0][1])
 
-                
-                for i in arr:
-                    draw = ImageDraw.Draw(image_p)
-                    # 获取label长宽
-                    label_size1 = draw.textsize(str(label[i]), font)
-                    # 设置label起点
-                    text_origin1 = np.array([bbox[i][0], bbox[i][1] - label_size1[1]])
-                    # 绘制矩形框，加入label文本
-                    draw.rectangle([bbox[i][0], bbox[i][1], bbox[i][2], bbox[i][3]],outline='red',width=2)
-                    draw.rectangle([tuple(text_origin1), tuple(text_origin1 + label_size1)], fill='red')
-                    draw.text(text_origin1, str(label[i]), fill=(255, 255, 255), font=font)
-                gt_box = gt_targets[0].box
-                gt_label = gt_targets[0].fields['labels']
-                for i in range(gt_box.shape[0]):
-                    draw = ImageDraw.Draw(image_p)
-                    # 获取label长宽
-                    label_size1 = draw.textsize(str(gt_label[i].item()), font)
-                    # 设置label起点
-                    text_origin1 = np.array([gt_box[i][0], gt_box[i][1] - label_size1[1]])
-                    # 绘制矩形框，加入label文本
-                    draw.rectangle([gt_box[i][0], gt_box[i][1], gt_box[i][2], gt_box[i][3]],outline='blue',width=1)
-                    draw.rectangle([tuple(text_origin1), tuple(text_origin1 + label_size1)], fill='blue')
-                    draw.text(text_origin1, str(gt_label[i].item()), fill=(255, 255, 255), font=font)
-                image_p.save('imgs/'+ str(ids[0]) +'.jpg')
+
                 pred_bboxes += [_pred_bboxes]
                 pred_labels += [_pred_labels]
                 pred_scores += [_pred_scores]
 
                 gt_bboxes += [_gt_bboxes_]
                 gt_labels += [_gt_labels_]
-                # gt_difficults.append(gt_difficults_)
 
-            # if ids == test_num: break
-            # print(pred.box.numpy())
-            # break
+
 
         gt_difficults = None
         
@@ -196,31 +162,6 @@ class Trainer():
             pred_bboxes, pred_labels, pred_scores,
             gt_bboxes, gt_labels, gt_difficults,
             use_07_metric=True)
-        # 获取所有张量的第二个维度大小
-        size_dim1 = min(tensor.size(1) for tensor in features_tsne)
-        # 调整所有张量的第二个维度大小为相同的值
-        features_tsne_adjusted = [tensor[:, :size_dim1] for tensor in features_tsne]
-        # 将张量列表转换为 NumPy 数组并进行拼接
-        features_tsne = np.concatenate([tensor.numpy() for tensor in features_tsne_adjusted], axis=0)
-        labels_tsne = np.concatenate([tensor.numpy() for tensor in labels_tsne], axis=0)
-        # features_tsne = torch.cat(features_tsne, dim=0)
-        # labels_tsne = torch.cat(labels_tsne, dim=0)
-        tsne = TSNE(n_components=2, perplexity=15, learning_rate=10)
-        features_tsne = tsne.fit_transform(features_tsne)
-        # 根据标签使用不同的颜色进行绘制
-        current_color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
-
-        # 打印颜色循环
-        print("当前颜色循环:", current_color_cycle)
-        for i in np.unique(labels_tsne):
-            plt.scatter(features_tsne[labels_tsne == i, 0], features_tsne[labels_tsne == i, 1], label=f'Class {i}')
-        # plt.title('T-SNE Visualization of baseline Features')
-        plt.xlabel('T-SNE Dimension 1')
-        plt.ylabel('T-SNE Dimension 2')
-        plt.xticks([])
-        plt.yticks([])
-        plt.axis('off')
-        plt.savefig('our_3.png')
         return result
     
 
