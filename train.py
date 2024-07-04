@@ -161,9 +161,6 @@ class Trainer():
                     torch.from_numpy(exposure.match_histograms(img.permute(1, 2, 0).numpy(), img_target.permute(1, 2, 0).numpy())).permute(2, 0, 1)
                     for img, img_target in zip(imgs_src.tensors, imgs_tgt.tensors)
                 ], dim=0).float()
-
-                # imgs_src.tensors = F.interpolate(imgs_src.tensors, size=(896, 896), mode='bilinear', align_corners=False)
-                # imgs_tgt.tensors = F.interpolate(imgs_tgt.tensors, size=(896, 896), mode='bilinear', align_corners=False)
                 
                 (features_src, _, _, _), _, losses = \
                     self.model(imgs_src.tensors.to(device=opt.device), image_sizes=None, targets=targets_src, train=True, domain='Source')
